@@ -24,6 +24,125 @@
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bot: env(safe-area-inset-bottom, 0px);
 }
+/* ═══════════════════════════════════════
+   SOFT STONE THEME (Light)
+═══════════════════════════════════════ */
+body.theme-light {
+  --gold:#B8860B; --gold-l:#8B6808; --dark:#ECEAE4; --card:#F5F3ED;
+  --border:#D0CCC0; --inp:#EDE9DF; --text:#28221A; --muted:#7A7060;
+  --dim:#A09080; --red:#C0392B; --green:#1E6B40; --blue:#1A5890;
+}
+body.theme-light{ background:#ECEAE4; }
+body.theme-light .header{
+  background:#F5F3ED;
+  border-bottom:1px solid #D0CCC0;
+  box-shadow:0 1px 6px rgba(0,0,0,.06);
+}
+body.theme-light .header h1{ color:#28221A; }
+body.theme-light .header p{ color:#7A7060; }
+body.theme-light .theme-toggle{ background:#EDE9DF; border-color:#C8C4B4; color:#B8860B; }
+body.theme-light .live-banner{ background:#F5F3ED; border-color:#D0CCC0; }
+body.theme-light .rate-chips .r-chip{ background:#F5F3ED; border-color:#D0CCC0; }
+body.theme-light .r-chip .rv.active{ color:#B8860B; }
+body.theme-light .update-btn{ background:#EAE4D0; border-color:#C8B870; color:#8B6808; }
+body.theme-light .tab-bar{ background:#E4DDD4; border-color:#C8C0B0; }
+body.theme-light .tab{ color:#7A7060; }
+body.theme-light .tab.active{ background:#F5F3ED; color:#28221A; border-color:#C8C4B4; }
+body.theme-light .tab.summary-tab{ color:#1A5890; }
+body.theme-light #addShopBtn{ color:#B8860B; border-color:rgba(184,134,11,.35); }
+body.theme-light .copy-all-btn{ background:#E8EEF8; border-color:#C0CCEC; color:#1A5890; }
+body.theme-light .card{ background:#F5F3ED; border-color:#D0CCC0; box-shadow:0 2px 8px rgba(0,0,0,.06); }
+body.theme-light .card-header{ background:#EDE9DF; border-bottom-color:#D0CCC0; }
+body.theme-light .card-header h2{ color:#28221A; }
+body.theme-light .card-badge{ background:#E4E0D4; color:#7A7060; }
+body.theme-light .shop-name-row{ background:#F5EED8; border-color:#D8C870; }
+body.theme-light .shop-rate-block{ background:linear-gradient(135deg,#F8F2E0,#F0E8D0); border-color:#D0B840; box-shadow:0 2px 8px rgba(184,134,11,.1); }
+body.theme-light .shop-rate-block::after{ color:rgba(184,134,11,.06); }
+body.theme-light .srb-sym{ color:#B8860B; }
+body.theme-light .srb-input{ color:#28221A; }
+body.theme-light .srb-hint-txt{ color:#A09080; }
+body.theme-light .srb-diff.same{ background:#EDE9DF; border-color:#C8C4B4; color:#7A7060; }
+body.theme-light .srb-sync{ background:#EAE4D0; border-color:rgba(184,134,11,.3); color:#8B6808; }
+body.theme-light .field label{ color:#7A7060; }
+body.theme-light .field input{ background:#F5F3ED; border-color:#C8C4B4; color:#28221A; box-shadow:0 1px 3px rgba(0,0,0,.04); }
+body.theme-light .field input:focus{ border-color:#B8860B; box-shadow:0 0 0 3px rgba(184,134,11,.1); }
+body.theme-light .field input::placeholder{ color:#B0A898; }
+body.theme-light .result-chip{ background:#EDE9DF; border-color:#C8C4B4; }
+body.theme-light .result-chip.gold-hi{ background:#F5EED8; border-color:#D8C870; }
+body.theme-light .r-label{ color:#A09080; }
+body.theme-light .r-value{ color:#28221A; }
+body.theme-light .result-chip.gold-hi .r-value{ color:#8B6808; }
+body.theme-light .og-entry{ background:#EDE9DF; border-color:#C8C4B4; }
+body.theme-light .og-chip{ background:#E4E0D4; border-color:#C8C4B4; }
+body.theme-light .og-chip .cl{ color:#A09080; }
+body.theme-light .og-chip .cv{ color:#28221A; }
+body.theme-light .og-chip.green{ border-color:rgba(30,107,64,.2); }
+body.theme-light .og-chip.green .cv{ color:#1E6B40; }
+body.theme-light .og-totals{ background:linear-gradient(135deg,#EAF5EE,#DCF0E4); border-color:rgba(30,107,64,.2); }
+body.theme-light .tl{ color:#7A7060; }
+body.theme-light .tv{ color:#1E6B40; }
+body.theme-light .add-og-btn{ border-color:rgba(184,134,11,.3); color:#B8860B; }
+body.theme-light .calc-btn{ background:linear-gradient(135deg,#C9A84C,#8B6808); color:#FFFFFF; box-shadow:0 4px 14px rgba(184,134,11,.2); }
+body.theme-light .b-table th{ color:#A09080; border-bottom-color:#D0CCC0; }
+body.theme-light .b-table td{ border-bottom-color:#E4E0D4; }
+body.theme-light .td-c{ color:#28221A; }
+body.theme-light .td-r,.td-w{ color:#7A7060; }
+body.theme-light .td-v{ color:#8B6808; }
+body.theme-light .row-sub td{ background:#EDE9DF; }
+body.theme-light .row-sub .td-c{ color:#28221A; }
+body.theme-light .row-og td{ background:rgba(30,107,64,.05); }
+body.theme-light .row-og .td-c{ color:#1E6B40; }
+body.theme-light .row-og .td-v{ color:#1E6B40; }
+body.theme-light .row-grand td{ background:linear-gradient(135deg,#F5EED8,#F0E8C8); border-top-color:#D8C870; }
+body.theme-light .row-grand .td-c{ color:#28221A; }
+body.theme-light .row-grand .td-v{ color:#8B6808; }
+body.theme-light .toggle-btn{ background:#EDE9DF; border-color:#C8C4B4; color:#7A7060; }
+body.theme-light .og-bd-wrap{ background:#EDE9DF; border-color:rgba(30,107,64,.15); }
+body.theme-light .og-bd-wrap th{ background:#E4E0D4; color:#A09080; border-bottom-color:#D0CCC0; }
+body.theme-light .og-bd-wrap td{ color:#7A7060; border-top-color:#E4E0D4; }
+body.theme-light .og-bd-wrap td:first-child{ color:#28221A; }
+body.theme-light .bd-total td{ color:#1E6B40; background:#EAF5EE; }
+body.theme-light .action-btn.reset{ border-color:#D0CCC0; color:#7A7060; }
+body.theme-light .action-btn.copy{ background:#E8EEF8; border-color:#C0CCEC; color:#1A5890; }
+body.theme-light .snapshot-btn{ background:#E8EEF8; border-color:#C0CCEC; color:#1A5890; }
+body.theme-light .sum-chip{ background:#F5F3ED; border-color:#D0CCC0; }
+body.theme-light .sc-l{ color:#A09080; }
+body.theme-light .sc-v{ color:#28221A; }
+body.theme-light .best-card{ background:linear-gradient(135deg,rgba(30,107,64,.07),rgba(30,107,64,.03)); border-color:rgba(30,107,64,.22); }
+body.theme-light .bc-name{ color:#28221A; }
+body.theme-light .cmp-table-wrap{ background:#F5F3ED; border-color:#D0CCC0; }
+body.theme-light .cmp-table th{ background:#EDE9DF; color:#A09080; border-bottom-color:#D0CCC0; }
+body.theme-light .cmp-table td{ border-bottom-color:#E4E0D4; }
+body.theme-light .cmp-table .best-row td{ background:rgba(30,107,64,.05); }
+body.theme-light .price-cell{ color:#28221A; }
+body.theme-light .price-cell.best{ color:#1E6B40; }
+body.theme-light .rate-cell-sm{ color:#7A7060; }
+body.theme-light .diff-cell{ color:#7A7060; }
+body.theme-light .bar-section{ background:#F5F3ED; border-color:#D0CCC0; }
+body.theme-light .bar-title{ color:#A09080; }
+body.theme-light .bar-name{ color:#28221A; }
+body.theme-light .bar-track{ background:#E4E0D4; }
+body.theme-light .bar-fill span{ color:#FFFFFF; }
+body.theme-light .sum-snapshot-btn{ background:#E8EEF8; border-color:#C0CCEC; color:#1A5890; }
+body.theme-light .modal{ background:#F5F3ED; border-color:#D0CCC0; }
+body.theme-light .modal-handle{ background:#D0CCC0; }
+body.theme-light .modal-title{ color:#28221A; }
+body.theme-light #snapCard{ background:linear-gradient(145deg,#F8F2E0,#F0E8D0); border-color:#D0B840; }
+body.theme-light .snap-shop-name{ color:#28221A; }
+body.theme-light .snap-date{ color:#7A7060; }
+body.theme-light .snap-divider{ background:#D0CCC0; }
+body.theme-light .snap-row .sl{ color:#7A7060; }
+body.theme-light .snap-row .sv{ color:#28221A; }
+body.theme-light .snap-grand{ background:rgba(184,134,11,.08); border-color:rgba(184,134,11,.25); }
+body.theme-light .gl{ color:#7A7060; }
+body.theme-light .gv{ color:#8B6808; }
+body.theme-light #toast{ background:#F5F3ED; border-color:#D0B840; color:#8B6808; box-shadow:0 4px 16px rgba(0,0,0,.1); }
+body.theme-light #toast.error{ border-color:#C0392B; color:#C0392B; }
+body.theme-light .ornament{ color:#C8C4B4; }
+body.theme-light .sig-footer{ border-top-color:#D0CCC0; }
+body.theme-light .sig-line{ color:#B0A898; }
+body.theme-light .sig-line span{ color:#9A9080; }
+
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{height:100%}
 body{
@@ -31,6 +150,7 @@ body{
   color:var(--text); min-height:100vh; max-width:480px;
   margin:0 auto; padding-bottom:calc(20px + var(--safe-bot));
   -webkit-tap-highlight-color:transparent; overscroll-behavior:none;
+  transition:background .2s, color .2s;
 }
 
 /* ═══════════════════════════════════════
@@ -68,11 +188,23 @@ body{
   background:linear-gradient(160deg,#1E1A10,#0E0C09);
   border-bottom:1px solid var(--border);
   padding:calc(14px + var(--safe-top)) 16px 12px;
-  text-align:center; position:sticky; top:0; z-index:30;
+  position:sticky; top:0; z-index:30;
+  display:flex; align-items:center; justify-content:space-between;
 }
+.header-center{flex:1;text-align:center}
 .header-icon{font-size:18px;margin-bottom:2px}
 .header h1{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;letter-spacing:.05em;color:var(--gold-l)}
 .header p{font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-top:1px}
+.header-side{width:40px;display:flex;justify-content:flex-end}
+.theme-toggle{
+  width:36px;height:36px;border-radius:50%;
+  border:1px solid var(--border);background:var(--inp);
+  color:var(--gold);font-size:17px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .2s,border-color .2s;
+  flex-shrink:0;
+}
+.theme-toggle:active{opacity:.7}
 
 /* ═══════════════════════════════════════
    LIVE RATE BANNER
@@ -310,6 +442,32 @@ body{
 #toast.error{border-color:var(--red);color:#F08080;background:#1E1010}
 
 .ornament{text-align:center;color:var(--dim);font-size:12px;letter-spacing:.3em;margin:16px 0 0}
+
+/* ═══════════════════════════════════════
+   SIGNATURE FOOTER
+═══════════════════════════════════════ */
+.sig-footer{
+  margin:20px 12px 0;
+  padding:10px 0;
+  border-top:1px solid var(--border);
+  text-align:center;
+}
+.sig-line{
+  font-size:10px;
+  color:var(--dim);
+  letter-spacing:.08em;
+  font-family:'DM Sans',sans-serif;
+}
+.sig-line span{
+  font-family:'Cormorant Garamond',serif;
+  font-style:italic;
+  font-size:12px;
+  color:var(--muted);
+  letter-spacing:.04em;
+}
+body.theme-light .sig-footer{ border-top-color:#E4E8EF; }
+body.theme-light .sig-line{ color:#C0CAD4; }
+body.theme-light .sig-line span{ color:#A8B3BE; }
 </style>
 </head>
 <body>
@@ -327,9 +485,15 @@ body{
 
 <!-- Header -->
 <div class="header">
-  <div class="header-icon">♦</div>
-  <h1>Gold Jewellery Calculator</h1>
-  <p>Multi-Shop · Live Rates</p>
+  <div class="header-side"></div>
+  <div class="header-center">
+    <div class="header-icon">♦</div>
+    <h1>Gold Jewellery Calculator</h1>
+    <p>Multi-Shop · Live Rates</p>
+  </div>
+  <div class="header-side">
+    <button class="theme-toggle" id="themeToggleBtn" onclick="toggleTheme()" title="Switch theme">☀</button>
+  </div>
 </div>
 
 <!-- Live Rate Banner -->
@@ -374,7 +538,9 @@ body{
 <!-- Main Content Area -->
 <div id="mainContent"></div>
 
-<div class="ornament">· ✦ · ✦ · ✦ ·</div>
+<div class="sig-footer">
+  <div class="sig-line">built by <span>Shaik Fazil</span></div>
+</div>
 
 <!-- Snapshot Modal -->
 <div class="modal-bg" id="snapshotModal" style="display:none"
@@ -412,6 +578,20 @@ body{
     const c22 = document.getElementById('chip22');
     if (c22 && r.r22) c22.textContent = '₹' + r.r22.toLocaleString('en-IN');
   };
+
+  // Theme toggle
+  function toggleTheme() {
+    const isLight = document.body.classList.toggle('theme-light');
+    document.getElementById('themeToggleBtn').textContent = isLight ? '🌙' : '☀';
+    localStorage.setItem('gc-theme', isLight ? 'light' : 'dark');
+    showToast(isLight ? '☀ Pearl White theme' : '🌙 Dark Gold theme');
+  }
+
+  // Apply saved theme on load
+  if (localStorage.getItem('gc-theme') === 'light') {
+    document.body.classList.add('theme-light');
+    document.getElementById('themeToggleBtn').textContent = '🌙';
+  }
 </script>
 </body>
 </html>

@@ -89,6 +89,9 @@ async function fetchLiveRates() {
     applyLiveRatesToUI();
     setRateFetchState('success');
     showToast('✦ Live rate updated from LKS T.Nagar');
+
+    // Re-render active shop so "↻ Sync live" button + live ref text appear
+    if (STATE.activeView === 'shop') renderActiveShop();
   } catch (err) {
     setRateFetchState('error');
     showToast('⚠ Could not fetch live rate. Enter manually.', true);

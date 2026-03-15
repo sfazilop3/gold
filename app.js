@@ -556,22 +556,35 @@ function buildItemBreakupList(shop) {
   container.innerHTML = shop.jewItems.map((item, idx) => {
     const c = item._calc || {};
     const label = item.name || `Item ${idx + 1}`;
+    const gstBadge = item.applyGst
+      ? `<span style="font-size:8px;padding:1px 7px;border-radius:20px;background:rgba(91,191,142,.1);color:var(--green);border:1px solid rgba(91,191,142,.2)">With GST</span>`
+      : `<span style="font-size:8px;padding:1px 7px;border-radius:20px;background:rgba(212,75,63,.1);color:var(--red);border:1px solid rgba(212,75,63,.2)">No GST</span>`;
+    const meta = `${fmt3(c.totalWt||0)}g · Making ${item.makingPct}% · ${item.applyGst ? 'GST '+shop.gst+'%' : 'No GST'}`;
     return `
-    <div style="background:var(--inp);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:8px">
-      <div style="font-family:'Cormorant Garamond',serif;font-size:14px;font-weight:600;color:var(--gold-l);margin-bottom:7px;display:flex;justify-content:space-between;align-items:center">
-        <span>💎 ${escHtml(label)}</span>
-        <span style="font-size:11px;background:${item.applyGst ? 'rgba(91,191,142,.1)' : 'rgba(212,75,63,.1)'};color:${item.applyGst ? 'var(--green)' : 'var(--red)'};padding:2px 8px;border-radius:20px;border:1px solid ${item.applyGst ? 'rgba(91,191,142,.25)' : 'rgba(212,75,63,.25)'}">${item.applyGst ? 'With GST' : 'No GST'}</span>
+    <div style="background:var(--inp);border:1px solid var(--border);border-radius:8px;margin-bottom:7px;overflow:hidden">
+      <!-- Summary line -->
+      <div style="display:flex;align-items:center;gap:8px;padding:8px 11px">
+        <span style="font-family:'Cormorant Garamond',serif;font-size:14px;font-weight:600;color:var(--gold-l);flex:1">💎 ${escHtml(label)}</span>
+        <span style="font-size:10px;color:var(--muted);white-space:nowrap">${meta}</span>
+        <span style="font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:700;color:var(--gold-l);white-space:nowrap">₹${fmtCur(c.itemTotal||0)}</span>
       </div>
-      <table class="b-table" style="font-size:12px">
-        <tbody>
-          <tr><td class="td-c">Gold (22K · ${fmt3(c.totalWt||0)}g)</td><td class="td-r">₹${fmtCur(shop.rate)}</td><td class="td-w">${fmt3(c.totalWt||0)}g</td><td class="td-v">₹${fmtCur(c.goldVal||0)}</td></tr>
-          <tr><td class="td-c">Other Charges</td><td class="td-r">—</td><td class="td-w">—</td><td class="td-v">₹${fmtCur(c.other||0)}</td></tr>
-          ${item.applyGst
-            ? `<tr><td class="td-c">GST (${shop.gst}%)</td><td class="td-r">${shop.gst}%</td><td class="td-w">—</td><td class="td-v">₹${fmtCur(c.gstAmt||0)}</td></tr>`
-            : `<tr><td class="td-c" style="color:var(--muted)" colspan="3">No GST · Without Bill</td><td class="td-v" style="color:var(--muted)">—</td></tr>`}
-          <tr class="row-sub"><td class="td-c" colspan="3">Item Total</td><td class="td-v">₹${fmtCur(c.itemTotal||0)}</td></tr>
-        </tbody>
-      </table>
+      <!-- Expand strip -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;border-top:1px solid var(--border)">
+        <div style="padding:6px 10px;text-align:center;border-right:1px solid var(--border)">
+          <div style="font-size:9px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em">Gold Value</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:600;color:var(--gold-l);margin-top:1px">₹${fmtCur(c.goldVal||0)}</div>
+        </div>
+        <div style="padding:6px 10px;text-align:center;border-right:1px solid var(--border)">
+          <div style="font-size:9px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em">Making (₹)</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:600;color:var(--muted);margin-top:1px">₹${fmtCur((c.goldVal||0)*item.makingPct/100)}</div>
+        </div>
+        <div style="padding:6px 10px;text-align:center">
+          <div style="font-size:9px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em">GST</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:600;margin-top:1px;color:${item.applyGst ? 'var(--muted)' : 'var(--red)'}">
+            ${item.applyGst ? '₹'+fmtCur(c.gstAmt||0) : '—'}
+          </div>
+        </div>
+      </div>
     </div>`;
   }).join('');
 }
@@ -836,39 +849,43 @@ function openSnapshotModal(shopId) {
   const r = shop._result || {};
   const now = new Date().toLocaleString('en-IN', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
 
-  // Table rows — one row per jewellery item
+  // Subtotal footer values
+  const totalMakingVal = shop.jewItems.reduce((s, item) => s + (item._calc?.goldVal||0) * item.makingPct / 100, 0);
+  const totalGstVal    = shop.jewItems.reduce((s, i)    => s + (i._calc?.gstAmt   || 0), 0);
+  const totalItemsVal  = shop.jewItems.reduce((s, i)    => s + (i._calc?.itemTotal || 0), 0);
+
+  // One data row + one formula sub-row per item
   const itemRows = shop.jewItems.map((item, i) => {
-    const c = item._calc || {};
-    const label = item.name || `Item ${i + 1}`;
-    const gstBadge = item.applyGst
-      ? `<span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:10px;background:rgba(91,191,142,.12);color:var(--green);border:1px solid rgba(91,191,142,.2)">With GST</span>`
-      : `<span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:10px;background:rgba(212,75,63,.1);color:var(--red);border:1px solid rgba(212,75,63,.2)">No GST</span>`;
+    const c        = item._calc || {};
+    const label    = item.name || `Item ${i + 1}`;
+    const makingRs = (c.goldVal || 0) * item.makingPct / 100;
+    const noGstBadge = !item.applyGst
+      ? `<span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:10px;background:rgba(212,75,63,.1);color:var(--red);border:1px solid rgba(212,75,63,.2);margin-top:3px">Without Bill</span>`
+      : '';
+    const formula = `${fmt3(c.totalWt||0)}g × ₹${fmtCur(r.rate)} = ₹${fmtCur(c.goldVal||0)}  ·  Making ${item.makingPct}%${item.applyGst ? ' + GST '+shop.gst+'%' : ' · No GST'}`;
+
     return `
-      <tr style="border-bottom:1px solid rgba(255,255,255,.05)">
-        <td style="padding:7px 5px;text-align:left">
+      <tr>
+        <td style="padding:9px 0 2px;vertical-align:top;text-align:left">
           <div style="font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:600;color:var(--gold-l)">💎 ${escHtml(label)}</div>
-          <div style="margin-top:2px">${gstBadge}</div>
+          ${noGstBadge}
         </td>
-        <td style="padding:7px 5px;text-align:right;font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:600;color:var(--gold-l)">
-          ₹${fmtCur(c.goldVal||0)}
-        </td>
-        <td style="padding:7px 5px;text-align:right">
-          <div style="font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:600;color:var(--muted)">₹${fmtCur(c.gstAmt > 0 || !item.applyGst ? (c.goldVal||0) * item.makingPct / 100 : c.subtotal - c.goldVal - (c.other||0))}</div>
+        <td style="padding:9px 0 2px;vertical-align:top;text-align:right">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:600;color:var(--muted)">₹${fmtCur(makingRs)}</div>
           <div style="font-size:9px;color:var(--dim)">(${item.makingPct}%)</div>
         </td>
-        <td style="padding:7px 5px;text-align:right;font-family:'Cormorant Garamond',serif;font-size:14px;font-weight:700;color:var(--gold-l)">
-          ₹${fmtCur(c.itemTotal||0)}
+        <td style="padding:9px 0 2px;vertical-align:top;text-align:right">
+          ${item.applyGst
+            ? `<div style="font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:600;color:var(--muted)">₹${fmtCur(c.gstAmt||0)}</div>
+               <div style="font-size:9px;color:var(--dim)">(${shop.gst}%)</div>`
+            : `<div style="font-family:'Cormorant Garamond',serif;font-size:13px;color:var(--dim)">—</div>`}
         </td>
+        <td style="padding:9px 0 2px;vertical-align:top;text-align:right;font-family:'Cormorant Garamond',serif;font-size:14px;font-weight:700;color:var(--gold-l)">₹${fmtCur(c.itemTotal||0)}</td>
+      </tr>
+      <tr style="border-bottom:1px solid rgba(255,255,255,.05)">
+        <td colspan="4" style="padding:1px 0 8px;font-size:9px;color:var(--dim);letter-spacing:.02em">${formula}</td>
       </tr>`;
   }).join('');
-
-  // Subtotal footer row
-  const totalGoldVal  = shop.jewItems.reduce((s, i) => s + (i._calc?.goldVal  || 0), 0);
-  const totalMakingVal = shop.jewItems.reduce((s, item) => {
-    const c = item._calc || {};
-    return s + (c.goldVal||0) * item.makingPct / 100;
-  }, 0);
-  const totalItemsTotal = shop.jewItems.reduce((s, i) => s + (i._calc?.itemTotal || 0), 0);
 
   const ogRows = shop.ogEntries.map((e, i) => {
     const nw = e.wt - (e.wt * e.ded / 100);
@@ -880,46 +897,30 @@ function openSnapshotModal(shopId) {
     <div class="snap-date">${now}</div>
     <div class="snap-divider"></div>
 
-    <!-- Header chips: rate · items · gst -->
-    <div style="display:flex;gap:6px;margin-bottom:10px">
-      <div style="flex:1;background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.2);border-radius:7px;padding:5px 7px;text-align:center">
-        <div style="font-size:9px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em">Gold Rate</div>
-        <div style="font-family:'Cormorant Garamond',serif;font-size:14px;font-weight:700;color:var(--gold-l);margin-top:1px">₹${fmtCur(r.rate)}/g</div>
-      </div>
-      <div style="flex:1;background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.2);border-radius:7px;padding:5px 7px;text-align:center">
-        <div style="font-size:9px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em">Items</div>
-        <div style="font-family:'Cormorant Garamond',serif;font-size:14px;font-weight:700;color:var(--gold-l);margin-top:1px">${shop.jewItems.length}</div>
-      </div>
-      <div style="flex:1;background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.2);border-radius:7px;padding:5px 7px;text-align:center">
-        <div style="font-size:9px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em">GST</div>
-        <div style="font-family:'Cormorant Garamond',serif;font-size:14px;font-weight:700;color:var(--gold-l);margin-top:1px">${shop.gst}%</div>
-      </div>
-    </div>
+    <div class="snap-rate-line">Gold Rate (22K) &nbsp;·&nbsp; <strong>₹${fmtCur(r.rate)} / g</strong></div>
 
-    <!-- Items table -->
     <table style="width:100%;border-collapse:collapse">
       <thead>
         <tr style="border-bottom:1px solid var(--border)">
-          <th style="font-size:9px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;padding:0 5px 7px;text-align:left;font-weight:400">Item</th>
-          <th style="font-size:9px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;padding:0 5px 7px;text-align:right;font-weight:400">Gold Value</th>
-          <th style="font-size:9px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;padding:0 5px 7px;text-align:right;font-weight:400">Making</th>
-          <th style="font-size:9px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;padding:0 5px 7px;text-align:right;font-weight:400">Total</th>
+          <th style="font-size:9px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;padding:0 0 7px;text-align:left;font-weight:400">Item</th>
+          <th style="font-size:9px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;padding:0 0 7px;text-align:right;font-weight:400">Making</th>
+          <th style="font-size:9px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;padding:0 0 7px;text-align:right;font-weight:400">GST</th>
+          <th style="font-size:9px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;padding:0 0 7px;text-align:right;font-weight:400">Total</th>
         </tr>
       </thead>
       <tbody>${itemRows}</tbody>
       <tfoot>
         <tr style="border-top:1px solid rgba(201,168,76,.2)">
-          <td style="padding:7px 5px;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Subtotal</td>
-          <td style="padding:7px 5px;text-align:right;font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:600;color:var(--gold-l)">₹${fmtCur(totalGoldVal)}</td>
-          <td style="padding:7px 5px;text-align:right;font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:600;color:var(--muted)">₹${fmtCur(totalMakingVal)}</td>
-          <td style="padding:7px 5px;text-align:right;font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:600;color:var(--gold-l)">₹${fmtCur(totalItemsTotal)}</td>
+          <td style="padding:7px 0 2px;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Subtotal</td>
+          <td style="padding:7px 0 2px;text-align:right;font-family:'Cormorant Garamond',serif;font-size:12px;font-weight:600;color:var(--muted)">₹${fmtCur(totalMakingVal)}</td>
+          <td style="padding:7px 0 2px;text-align:right;font-family:'Cormorant Garamond',serif;font-size:12px;font-weight:600;color:var(--muted)">₹${fmtCur(totalGstVal)}</td>
+          <td style="padding:7px 0 2px;text-align:right;font-family:'Cormorant Garamond',serif;font-size:12px;font-weight:600;color:var(--gold-l)">₹${fmtCur(totalItemsVal)}</td>
         </tr>
       </tfoot>
     </table>
 
     <div class="snap-divider"></div>
-    <div class="snap-row"><span class="sl">Total GST</span><span class="sv">₹${fmtCur(r.combinedGst||0)}</span></div>
-    ${shop.ogEntries.length > 0 ? ogRows + `<div class="snap-row og"><span class="sl">Old Gold Exchange</span><span class="sv">- ₹${fmtCur(r.ogTotalVal||0)}</span></div>` : ''}
+    ${shop.ogEntries.length > 0 ? ogRows + `<div class="snap-row og"><span class="sl">🔄 Old Gold Exchange</span><span class="sv">− ₹${fmtCur(r.ogTotalVal||0)}</span></div>` : ''}
     <div class="snap-grand"><div><div class="gl">Final Payable Amount</div></div><div class="gv">₹${fmtCur(Math.max(0,r.grand||0))}</div></div>
     <div class="snap-wm">Gold Jewellery Calculator · LKS Live Rates · ${STATE.liveRate.fetchedAt || ''}</div>
   `;

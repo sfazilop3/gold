@@ -17,8 +17,51 @@ const STATE = {
 };
 
 // ─────────────────────────────────────────
-//  SHOP FACTORY
+//  PERSISTENCE — localStorage
 // ─────────────────────────────────────────
+const STORAGE_KEY = 'gc-state-v1';
+
+function saveState() {
+  try {
+    // Strip runtime-only fields before saving
+    const shops = STATE.shops.map(s => ({
+      id:           s.id,
+      name:         s.name,
+      rate:         s.rate,
+      gst:          s.gst,
+      jewIdCounter: s.jewIdCounter,
+      jewItems:     s.jewItems.map(({ _calc, ...item }) => item),
+      ogIdCounter:  s.ogIdCounter,
+      ogEntries:    s.ogEntries
+    }));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      shops,
+      activeShopId:  STATE.activeShopId,
+      shopIdCounter: STATE.shopIdCounter
+    }));
+  } catch (e) { /* storage full or unavailable — fail silently */ }
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return false;
+    const saved = JSON.parse(raw);
+    if (!saved?.shops?.length) return false;
+
+    STATE.shops         = saved.shops;
+    STATE.activeShopId  = saved.activeShopId;
+    STATE.shopIdCounter = saved.shopIdCounter || saved.shops.length;
+    return true;
+  } catch (e) { return false; }
+}
+
+function clearSavedState() {
+  localStorage.removeItem(STORAGE_KEY);
+  location.reload();
+}
+
+
 function createShop(name = '') {
   STATE.shopIdCounter++;
   const id = STATE.shopIdCounter;
@@ -53,15 +96,26 @@ document.addEventListener('DOMContentLoaded', () => {
     navigator.serviceWorker.register('./sw.js').catch(() => {});
   }
 
-  const shop1 = createShop('Shop 1');
-  shop1.jewIdCounter = 1;
-  shop1.jewItems.push({ ...createJewItem(), id: 1, name: 'Item 1' });
-  STATE.shops.push(shop1);
-  STATE.activeShopId = shop1.id;
+  // Try to restore saved state — fall back to fresh shop if nothing saved
+  const restored = loadState();
+  if (!restored) {
+    const shop1 = createShop('Shop 1');
+    shop1.jewIdCounter = 1;
+    shop1.jewItems.push({ ...createJewItem(), id: 1, name: 'Item 1' });
+    STATE.shops.push(shop1);
+    STATE.activeShopId = shop1.id;
+  }
 
   renderTabBar();
   renderActiveShop();
   fetchLiveRates();
+
+  // Load saved theme
+  if (localStorage.getItem('gc-theme') === 'light') {
+    document.body.classList.add('theme-light');
+    const btn = document.getElementById('themeToggleBtn');
+    if (btn) btn.textContent = '🌙';
+  }
 
   window.addEventListener('beforeinstallprompt', e => {
     e.preventDefault();
@@ -213,6 +267,7 @@ function addShop() {
   shop.jewItems.push({ ...createJewItem(), id: 1, name: 'Item 1' });
   STATE.shops.push(shop);
   switchToShop(shop.id);
+  saveState();
 }
 
 function deleteShop(shopId, event) {
@@ -225,6 +280,7 @@ function deleteShop(shopId, event) {
   }
   renderTabBar();
   renderActiveShop();
+  saveState();
 }
 
 // ─────────────────────────────────────────
@@ -545,6 +601,7 @@ function recalcShopTotals(shop) {
 function recalcShop(shop) {
   if (!shop) return;
   recalcShopTotals(shop);
+  saveState();
 }
 
 // ─────────────────────────────────────────
@@ -598,6 +655,7 @@ function updateShopName(shopId, val) {
     shop.name = val;
     const tab = document.querySelector(`.shop-tab[data-shop-id="${shopId}"] .tab-name`);
     if (tab) tab.textContent = val || 'Shop';
+    saveState();
   }
 }
 
@@ -771,6 +829,7 @@ function resetShop(shopId) {
   shop._result = null;
   renderActiveShop();
   showToast('↺ Shop reset');
+  saveState();
 }
 
 // ─────────────────────────────────────────
